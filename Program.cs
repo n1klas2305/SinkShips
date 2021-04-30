@@ -149,6 +149,9 @@ namespace Programmierung
                     length--;
                 }
             }
+            else {
+                return false;
+            }
             return true;
         }
     }
