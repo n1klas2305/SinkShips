@@ -6,7 +6,6 @@ namespace Programmierung
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
             displayShips(randomShipPlace());
         }
 
@@ -24,42 +23,43 @@ namespace Programmierung
                         int randomX = new Random().Next(0, 20);
                         int randomY = new Random().Next(0, 20);
                         int randomDirection = new Random().Next(0, 4);
-                        int help = i;
-                        if (randomDirection == 0 && isFreeSpaceAndIndexInBounds(randomX, randomY, randomDirection, i, playground))
+                        int shipSection = i;
+                        bool isShipValid = isFreeSpaceAndIndexInBounds(randomX, randomY, randomDirection, i, playground);
+                        if (randomDirection == 0 && isShipValid)
                         {
                             shipCorrect = true;
-                            while (help > 0)
+                            while (shipSection > 0)
                             {
                                 playground[randomX, randomY++] = "x";
-                                help--;
+                                shipSection--;
                             }
                         }
-                        else if (randomDirection == 1 && isFreeSpaceAndIndexInBounds(randomX, randomY, randomDirection, i, playground))
+                        else if (randomDirection == 1 && isShipValid)
                         {
                             shipCorrect = true;
-                            while (help > 0)
+                            while (shipSection > 0)
                             {
                                 playground[randomX, randomY--] = "x";
 
-                                help--;
+                                shipSection--;
                             }
                         }
-                        else if (randomDirection == 2 && isFreeSpaceAndIndexInBounds(randomX, randomY, randomDirection, i, playground))
+                        else if (randomDirection == 2 && isShipValid)
                         {
                             shipCorrect = true;
-                            while (help > 0)
+                            while (shipSection > 0)
                             {
                                 playground[randomX++, randomY] = "x";
-                                help--;
+                                shipSection--;
                             }
                         }
-                        else if (randomDirection == 3 && isFreeSpaceAndIndexInBounds(randomX, randomY, randomDirection, i, playground))
+                        else if (randomDirection == 3 && isShipValid)
                         {
                             shipCorrect = true;
-                            while (help > 0)
+                            while (shipSection > 0)
                             {
                                 playground[randomX--, randomY] = "x";
-                                help--;
+                                shipSection--;
                             }
                         }
                     }
@@ -72,15 +72,14 @@ namespace Programmierung
         // displays the playground in the console
         public static void displayShips(string[,] playground)
         {
-            int arrayLength = playground.GetLength(0);
             Console.WriteLine("Schiffe versenken");
-            displayBorder(arrayLength);
+            displayBorder(playground.GetLength(0));
             Console.WriteLine();
 
-            for (int x = 0; x < arrayLength; x++)
+            for (int x = 0; x < playground.GetLength(0); x++)
             {
                 Console.Write("|#");
-                for (int y = 0; y < arrayLength; y++)
+                for (int y = 0; y < playground.GetLength(1); y++)
                 {
                     if (playground[x, y] == null)
                         Console.Write("| ");
@@ -90,7 +89,7 @@ namespace Programmierung
                 Console.Write("|#|");
                 Console.WriteLine();
             }
-            displayBorder(arrayLength);
+            displayBorder(playground.GetLength(0));
         }
 
         // displays the top/bottom border for the playground in the console
@@ -149,7 +148,8 @@ namespace Programmierung
                     length--;
                 }
             }
-            else {
+            else
+            {
                 return false;
             }
             return true;
