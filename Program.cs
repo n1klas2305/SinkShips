@@ -9,6 +9,7 @@ namespace Programmierung
             displayShips(randomShipPlace());
         }
 
+        // add ships at random positions in playground
         public static string[,] randomShipPlace()
         {
             int shipCount = 1;
@@ -69,7 +70,7 @@ namespace Programmierung
             return playground;
         }
 
-        // displays the playground in the console
+        // display the playground in the console
         public static void displayShips(string[,] playground)
         {
             Console.WriteLine("Schiffe versenken");
@@ -92,7 +93,7 @@ namespace Programmierung
             displayBorder(playground.GetLength(0));
         }
 
-        // displays the top/bottom border for the playground in the console
+        // display the top/bottom border for the playground in the console
         public static void displayBorder(int arrayLength)
         {
             for (int x = 0; x < arrayLength + 2; x++)
@@ -102,6 +103,7 @@ namespace Programmierung
             Console.Write("|");
         }
 
+        // check if ship position is valid
         public static bool isFreeSpaceAndIndexInBounds(int x, int y, int direction, int length, string[,] playground)
         {
             if (direction == 0 && y + length < 20)
