@@ -6,81 +6,41 @@ namespace Programmierung
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-            displayShips(randomShipPlace());
+            string[,] playground = randomShipPlace();
+            displayShips(playground);
         }
 
+        // create a playground with ships
         public static string[,] randomShipPlace()
         {
-            int shipCount = 1;
+            int[] shipCounts = new int[] { 1, 2, 3, 4 };
+            int[] shipLengths = new int[] { 5, 4, 3, 2 };
             string[,] playground = new string[20, 20];
-            for (int i = 5; i >= 2; i--)
-            {
-                for (int r = 0; r < shipCount; r++)
-                {
-                    bool shipCorrect = false;
-                    while (!shipCorrect)
-                    {
-                        int randomX = new Random().Next(0, 20);
-                        int randomY = new Random().Next(0, 20);
-                        int randomDirection = new Random().Next(0, 4);
-                        int help = i;
-                        if (randomDirection == 0 && isFreeSpaceAndIndexInBounds(randomX, randomY, randomDirection, i, playground))
-                        {
-                            shipCorrect = true;
-                            while (help > 0)
-                            {
-                                playground[randomX, randomY++] = "x";
-                                help--;
-                            }
-                        }
-                        else if (randomDirection == 1 && isFreeSpaceAndIndexInBounds(randomX, randomY, randomDirection, i, playground))
-                        {
-                            shipCorrect = true;
-                            while (help > 0)
-                            {
-                                playground[randomX, randomY--] = "x";
 
-                                help--;
-                            }
-                        }
-                        else if (randomDirection == 2 && isFreeSpaceAndIndexInBounds(randomX, randomY, randomDirection, i, playground))
-                        {
-                            shipCorrect = true;
-                            while (help > 0)
-                            {
-                                playground[randomX++, randomY] = "x";
-                                help--;
-                            }
-                        }
-                        else if (randomDirection == 3 && isFreeSpaceAndIndexInBounds(randomX, randomY, randomDirection, i, playground))
-                        {
-                            shipCorrect = true;
-                            while (help > 0)
-                            {
-                                playground[randomX--, randomY] = "x";
-                                help--;
-                            }
-                        }
-                    }
+            // iterate each ship type
+            for (int shipCount = 0; shipCount < shipCounts.Length; shipCount++)
+            {
+                int shipLength = shipLengths[shipCount];
+                // iterate count of ship type
+                for (int ship = 0; ship < shipCounts[shipCount]; ship++)
+                {
+                    createShip(shipLength, playground);
                 }
-                shipCount++;
             }
             return playground;
         }
 
-        // displays the playground in the console
+        // display the playground in the console
         public static void displayShips(string[,] playground)
         {
-            int arrayLength = playground.GetLength(0);
             Console.WriteLine("Schiffe versenken");
-            displayBorder(arrayLength);
+            displayBorder(playground.GetLength(0));
             Console.WriteLine();
 
-            for (int x = 0; x < arrayLength; x++)
+            for (int x = 0; x < playground.GetLength(0); x++)
             {
                 Console.Write("|#");
-                for (int y = 0; y < arrayLength; y++)
+                for (int y = 0; y < playground.GetLength(1); y++)
                 {
                     if (playground[x, y] == null)
                         Console.Write("| ");
@@ -90,10 +50,10 @@ namespace Programmierung
                 Console.Write("|#|");
                 Console.WriteLine();
             }
-            displayBorder(arrayLength);
+            displayBorder(playground.GetLength(0));
         }
 
-        // displays the top/bottom border for the playground in the console
+        // display the top/bottom border for the playground in the console
         public static void displayBorder(int arrayLength)
         {
             for (int x = 0; x < arrayLength + 2; x++)
@@ -103,54 +63,67 @@ namespace Programmierung
             Console.Write("|");
         }
 
-        public static bool isFreeSpaceAndIndexInBounds(int x, int y, int direction, int length, string[,] playground)
+        // add a ship to playground
+        public static string[,] createShip(int shipLength, string[,] playground)
         {
-            if (direction == 0 && y + length < 20)
+            bool valid = false;
+            int randomX = 0, randomY = 0, randomDirection = 0, x, y;
+
+            // find valid place for ship
+            while (!valid)
             {
-                while (length > 0)
+                bool error = false;
+                randomX = new Random().Next(0, 20);
+                randomY = new Random().Next(0, 20);
+                randomDirection = new Random().Next(0, 4);
+
+                x = randomX;
+                y = randomY;
+
+                for (int shipPart = 0; shipPart < shipLength; shipPart++)
                 {
-                    if (playground[x, y++] != null)
+                    bool isXValid = 0 <= x && x < playground.GetLength(0);
+                    bool isYValid = 0 <= y && y < playground.GetLength(1);
+                    if (isXValid && isYValid && playground[x, y] == null)
                     {
-                        return false;
+                        (int X, int Y) cords = moveToDirection(x, y, randomDirection);
+                        x = cords.X;
+                        y = cords.Y;
                     }
-                    length--;
+                    else
+                    {
+                        error = true;
+                    }
+                    if (shipPart == shipLength - 1 && !error) valid = true;
                 }
             }
-            else if (direction == 1 && y - length >= 0)
+            x = randomX;
+            y = randomY;
+
+            // add ships to playground
+            for (int shipPart = 0; shipPart < shipLength; shipPart++)
             {
-                while (length > 0)
-                {
-                    if (playground[x, y--] != null)
-                    {
-                        return false;
-                    }
-                    length--;
-                }
+                playground[x, y] = "x";
+
+                (int X, int Y) cords = moveToDirection(x, y, randomDirection);
+                x = cords.X;
+                y = cords.Y;
             }
-            else if (direction == 2 && x + length < 20)
-            {
-                while (length > 0)
-                {
-                    if (playground[x++, y] != null)
-                    {
-                        return false;
-                    }
-                    length--;
-                }
-            }
-            else if (direction == 3 && x - length >= 0)
-            {
-                while (length > 0)
-                {
-                    if (playground[x--, y] != null)
-                    {
-                        return false;
-                    }
-                    length--;
-                }
-            }
-            return true;
+            return playground;
+        }
+
+        // move 1 coorinate from startpoint into direction
+        public static (int X, int Y) moveToDirection(int x, int y, int direction)
+        {
+            if (direction == 0)
+                x++;
+            else if (direction == 1)
+                x--;
+            else if (direction == 2)
+                y++;
+            else if (direction == 3)
+                y--;
+            return (x, y);
         }
     }
 }
-
