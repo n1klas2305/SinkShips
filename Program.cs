@@ -6,7 +6,9 @@ namespace Programmierung
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            string[,] playground = new string[20, 20];
+            playground[1, 2] = "x";
+            displayShips(playground);
         }
 
         public static void randomShipPlace()
@@ -50,5 +52,40 @@ namespace Programmierung
                 shipCount++;
             }
         }
+        
+        // displays the playground in the console
+        public static void displayShips(string[,] playground)
+        {
+            int arrayLength = playground.GetLength(0);
+            Console.WriteLine("Schiffe versenken");
+            displayBorder(arrayLength);
+            Console.WriteLine();
+
+            for (int x = 0; x < arrayLength; x++)
+            {
+                Console.Write("|#");
+                for (int y = 0; y < arrayLength; y++)
+                {
+                    if (playground[x, y] == null)
+                        Console.Write("| ");
+                    else
+                        Console.Write("|x");
+                }
+                Console.Write("|#|");
+                Console.WriteLine();
+            }
+            displayBorder(arrayLength);
+        }
+
+        // displays the top/bottom border for the playground in the console
+        public static void displayBorder(int arrayLength)
+        {
+            for (int x = 0; x < arrayLength + 2; x++)
+            {
+                Console.Write("|#");
+            }
+            Console.Write("|");
+        }
     }
 }
+
